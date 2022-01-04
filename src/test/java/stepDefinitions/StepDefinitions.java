@@ -37,10 +37,14 @@ public class StepDefinitions {
 
     @Then("I verify if data from GET body matches with data from response {string} for {string} and {string} for {string}")
     public void i_verify_if_data_from_GET_body_matches_with_data_from_response_for_and_for(String jsonPath1, String testData1, String jsonPath2, String testData2) {
-        response.then().assertThat().body(jsonPath1, equalTo(testData1),
-                jsonPath2, equalTo(testData2));
+        if (jsonPath2.equals("data.id")) {
+            response.then().assertThat().body(jsonPath1, equalTo(testData1),
+                    jsonPath2, equalTo(Integer.valueOf(testData2)));
+        } else {
+            response.then().assertThat().body(jsonPath1, equalTo(testData1),
+                    jsonPath2, equalTo(testData2));
+        }
     }
-
     @When("I set the expected data for request and response {string} and {string}")
     public void i_set_the_expected_data_for_request_and_response_and(String path, String path2) throws Exception {
         // parsing file
@@ -79,7 +83,12 @@ public class StepDefinitions {
             Assert.assertEquals(expectedResponseBody.get(data1), (json.getString(data1)));
             Assert.assertEquals(expectedResponseBody.get(data2), json.getString(data2));
         }
+    }
 
+    @Then("I verify if data from POST body matches with data from response {string}")
+    public void i_verify_if_data_from_POST_body_matches_with_data_from_response(String data) {
+      json=response.jsonPath();
+      Assert.assertEquals(expectedResponseBody.get(data),json.getString(data));
     }
 
 

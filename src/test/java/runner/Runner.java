@@ -19,9 +19,9 @@ import org.junit.runner.RunWith;
         features = "src/test/resources_features",
         //Path of step definitions
         glue = "stepDefinitions" ,
-        //tags = "@cryspositive or @crysnegative",
-        tags = "@test",
-        dryRun = true
+        tags = "@this or @test",
+      //  tags = "@this",
+        dryRun = false
 
 
 )

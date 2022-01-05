@@ -1,5 +1,6 @@
 package stepDefinitions;
 
+import io.cucumber.java.an.E;
 import io.cucumber.java.en.*;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -7,11 +8,15 @@ import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Assert;
+
 import java.io.FileReader;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class StepDefinitions {
     Response response;
@@ -45,6 +50,7 @@ public class StepDefinitions {
                     jsonPath2, equalTo(testData2));
         }
     }
+
     @When("I set the expected data for request and response {string} and {string}")
     public void i_set_the_expected_data_for_request_and_response_and(String path, String path2) throws Exception {
         // parsing file
@@ -87,9 +93,43 @@ public class StepDefinitions {
 
     @Then("I verify if data from POST body matches with data from response {string}")
     public void i_verify_if_data_from_POST_body_matches_with_data_from_response(String data) {
-      json=response.jsonPath();
-      Assert.assertEquals(expectedResponseBody.get(data),json.getString(data));
+        json = response.jsonPath();
+        Assert.assertEquals(expectedResponseBody.get(data), json.getString(data));
     }
 
 
+    @When("I send GET request to the endpoint with path parameter name as {string} for {string}  and {string} is {string} for query parameters")
+    public void i_send_GET_request_to_the_endpoint_with_path_parameter_name_as_for_and_is_for_query_parameters(String pathParName, String pathPar, String queryName, String query) {
+        BaseUrlReq.baseUrl.pathParams(pathParName, pathPar).queryParam(queryName, query);
+        String getUrl = String.format("{%s}", pathParName);
+        response = given().spec(BaseUrlReq.baseUrl).when().get(getUrl);
+        response.prettyPrint();
+    }
+
+    @Then("the number of data should be {int} for each page")
+    public void the_number_of_data_should_be_for_each_page(Integer size) {
+        json = response.jsonPath();
+        List<String> allData = json.getList("data");
+        Assert.assertEquals(size, (Integer) allData.size());
+    }
+
+    @Then("all users have avatar")
+    public void all_users_have_avatar() {
+        List<Map<String, Object>> allData = json.getList("data");
+        for (Map<String, Object> each : allData) {
+            assertFalse(each.equals(" "));
+        }
+    }
+
+    @Then("verify the data for eleventh user")
+    public void verify_the_data_for_eleventh_user(List<List<String>> dataTable) {
+        json = response.jsonPath();
+        for (int i = 0; i < dataTable.size(); i++) {
+            if (json.get(dataTable.get(i).get(0)).equals("id")) {
+                assertEquals(dataTable.get(i).get(1), json.getInt(dataTable.get(i).get(0)));
+            } else {
+                assertEquals(dataTable.get(i).get(1), json.getString(dataTable.get(i).get(0)));
+            }
+        }
+    }
 }

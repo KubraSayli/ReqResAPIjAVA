@@ -115,10 +115,11 @@ public class StepDefinitions {
 
     @Then("all users have avatar")
     public void all_users_have_avatar() {
-        List<Map<String, Object>> allData = json.getList("data");
-        for (Map<String, Object> each : allData) {
-            assertFalse(each.equals(" "));
+        List <String> avatarData = json.getList("data.avatar");
+        for (int i = 0; i < avatarData.size(); i++) {
+            assertFalse(avatarData.get(i).equals(" "));
         }
+
     }
 
     @Then("verify the data for eleventh user")

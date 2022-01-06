@@ -10,7 +10,7 @@ Feature: As a QA,I want to verify if GET requests are working as expected for ht
     Examples:
       | pathParName1 | pathParam1 | pathParName2 | pathParam2 | jsonPath1       | testData1    | jsonPath2      | testData2 |
       | usersPath    | users      | id           | 2          | data.first_name | Janet        | data.last_name | Weaver    |
-      | PathNanme    | unknown    | id           | 2          | data.name       | fuchsia rose | data.id        | 2         |
+      | PathName    | unknown    | id           | 2          | data.name       | fuchsia rose | data.id        | 2         |
 
   @this
   Scenario: Verify if GET request is working as expected for list of users
